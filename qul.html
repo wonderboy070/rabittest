@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI hand</title>
+
+  <!-- MediaPipe & TensorFlow -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+  <style>
+    body { text-align: center; background: #000; margin: 0; }
+    h1 { color: white; margin: 20px 0; }
+    video { display: none; }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .feedback {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      background: crimson;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🤖 AI Fizioterapiya</h1>
+<video id="video" width="640" height="480" autoplay muted></video>
+<canvas id="canvas" width="640" height="480"></canvas>
+<div class="feedback" id="feedback">Mashqni boshlang...</div>
+
+<script>
+  const videoElement = document.getElementById('video');
+  const canvasElement = document.getElementById('canvas');
+  const canvasCtx = canvasElement.getContext('2d');
+  const feedbackText = document.getElementById('feedback');
+
+  let lastPosition = null;
+  let correctReps = 0;
+  let incorrectReps = 0;
+
+  const hands = new Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+  });
+
+  hands.setOptions({
+    maxNumHands: 2,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.7,
+    minTrackingConfidence: 0.7,
+  });
+
+  hands.onResults(onResults);
+
+  const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await hands.send({ image: videoElement });
+    },
+    width: 640,
+    height: 480,
+  });
+  camera.start();
+
+  function onResults(results) {
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+    // ❌ Inson videosi chizilmaydi
+    // canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+    if (results.multiHandLandmarks) {
+      for (const landmarks of results.multiHandLandmarks) {
+        drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 3 });
+        drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
+        checkExercise(landmarks);
+      }
+    }
+    canvasCtx.restore();
+  }
+
+  function checkExercise(landmarks) {
+    const wrist = landmarks[0];
+
+    if (!lastPosition) {
+      lastPosition = wrist.y;
+      return;
+    }
+
+    const movement = Math.abs(wrist.y - lastPosition);
+    
+    if (movement > 0.1) {
+      feedbackText.innerText = "Mashq to‘g‘ri bajarilmoqda ✅";
+      feedbackText.style.background = "green";
+      correctReps++;
+    } else {
+      feedbackText.innerText = "Qo‘lni ko‘tarish kerak ❌";
+      feedbackText.style.background = "crimson";
+      incorrectReps++;
+    }
+
+    lastPosition = wrist.y;
+  }
+</script>
+
+</body>
+</html>

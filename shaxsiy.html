@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shaxsiy Kabinet</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #3498db;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .info-value {
+      color: #333;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #2980b9;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    input {
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    
+    .brand-title {
+            font-size: 50px;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, #FF416C, #FF4B2B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        .brand-title span {
+            font-size: 40px;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="text-center">
+        <h2 class="brand-title">MedFit <span>AI</span></h2>
+        <h2 class="brand-title"><span>Wonderboy</span></h2>
+    </div>
+
+    <div id="infoView">
+      <div class="info-row"><span class="info-label">Telefon:</span><span class="info-value" id="phoneValue">+998 90 123 45 67</span></div>
+      <div class="info-row"><span class="info-label">Tug‘ilgan sana:</span><span class="info-value" id="birthValue">2000-01-01</span></div>
+      <div class="info-row"><span class="info-label">Jins:</span><span class="info-value" id="genderValue">Erkak</span></div>
+      <div class="info-row"><span class="info-label">Manzil:</span><span class="info-value" id="addressValue">Toshkent, Uzbekistan</span></div>
+      <div class="text-center">
+        <button class="btn" onclick="toggleEdit(true)">Tahrirlash</button>
+      </div>
+    </div>
+
+    <div id="infoEdit" class="hidden">
+      <div class="info-row"><span class="info-label">Telefon:</span><input type="text" id="phoneInput" value="+998 90 123 45 67" /></div>
+      <div class="info-row"><span class="info-label">Tug‘ilgan sana:</span><input type="date" id="birthInput" value="2000-01-01" /></div>
+      <div class="info-row"><span class="info-label">Jins:</span>
+        <select id="genderInput">
+          <option value="Erkak">Erkak</option>
+          <option value="Ayol">Ayol</option>
+        </select>
+      </div>
+      <div class="info-row"><span class="info-label">Manzil:</span><input type="text" id="addressInput" value="Toshkent, Uzbekistan" /></div>
+      <div class="text-center">
+        <button class="btn" onclick="saveInfo()">Saqlash</button>
+        <button class="btn" style="background:#7f8c8d;" onclick="toggleEdit(false)">Bekor qilish</button>
+      </div>
+    </div>
+  </div>
+					
+  <script>
+    function toggleEdit(editMode) {
+      document.getElementById("infoView").classList.toggle("hidden", editMode);
+      document.getElementById("infoEdit").classList.toggle("hidden", !editMode);
+    }
+
+    function saveInfo() {
+      // O'qib olish
+      const phone = document.getElementById("phoneInput").value;
+      const birth = document.getElementById("birthInput").value;
+      const gender = document.getElementById("genderInput").value;
+      const address = document.getElementById("addressInput").value;
+
+      // Ko'rsatish
+      document.getElementById("phoneValue").innerText = phone;
+      document.getElementById("birthValue").innerText = birth;
+      document.getElementById("genderValue").innerText = gender;
+      document.getElementById("addressValue").innerText = address;
+
+      // Rejimni o‘zgartirish
+      toggleEdit(false);
+    }
+  </script>
+
+</body>
+</html>
